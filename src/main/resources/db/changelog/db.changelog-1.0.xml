@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="utf-8"?>
+<databaseChangeLog
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.5.xsd">
+
+    <changeSet id="1.0.0" author="KuhtaIA">
+        <sql>
+            CREATE SEQUENCE global_seq START WITH 100000;
+
+            CREATE TABLE users
+            (
+            id               INTEGER PRIMARY KEY DEFAULT nextval('global_seq'),
+            name             VARCHAR                 NOT NULL,
+            email            VARCHAR                 NOT NULL,
+            password         VARCHAR                 NOT NULL,
+            registered       TIMESTAMP DEFAULT now() NOT NULL,
+            enabled          BOOL DEFAULT TRUE       NOT NULL
+            );
+            CREATE UNIQUE INDEX users_unique_email_idx ON users (email);
+
+            CREATE TABLE user_roles
+            (
+            user_id INTEGER NOT NULL,
+            role    VARCHAR,
+            CONSTRAINT user_roles_idx UNIQUE (user_id, role),
+            FOREIGN KEY (user_id) REFERENCES users (id) ON DELETE CASCADE
+            );
+        </sql>
+    </changeSet>
+
+    <changeSet id="1.0.1" author="KuhtaIA">
+        <sql>
+            INSERT INTO users (name, email, password) VALUES
+            ('User', 'user@yandex.ru', '{noop}password'),
+            ('Admin', 'admin@gmail.com', '{noop}admin');
+
+            INSERT INTO user_roles (role, user_id) VALUES
+            ('ROLE_USER', 100000),
+            ('ROLE_ADMIN', 100001),
+            ('ROLE_USER', 100001);
+        </sql>
+    </changeSet>
+
+</databaseChangeLog>

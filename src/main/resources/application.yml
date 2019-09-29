@@ -1,0 +1,14 @@
+spring:
+  datasource:
+#    initialization-mode: always
+#    pool-size-max: 5
+#    driverClassName: org.postgresql.Driver
+    url: jdbc:postgresql://localhost:5432/electromachine
+    username: postgres
+    password: postgres
+
+  liquibase:
+    change-log: classpath:db/changelog/db.changelog-master.xml
+    url: jdbc:postgresql://localhost:5432/electromachine
+    user: postgres
+    password: postgres
