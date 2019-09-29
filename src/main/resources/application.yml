@@ -1,3 +1,8 @@
+server:
+  port: 8090
+  servlet:
+    context-path: /electromachine
+
 spring:
   datasource:
 #    initialization-mode: always
@@ -12,3 +17,6 @@ spring:
     url: jdbc:postgresql://localhost:5432/electromachine
     user: postgres
     password: postgres
+
+mybatis:
+  mapper-locations: classpath*:mappers/**/*.xml
