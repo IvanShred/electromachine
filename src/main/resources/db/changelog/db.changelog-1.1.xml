@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="utf-8"?>
+<databaseChangeLog
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.5.xsd">
+
+    <changeSet id="1.1.0" author="KuhtaIA">
+        <sql>
+            create table protocol_azur
+            (
+            id                       bigint default nextval('global_seq' :: regclass) not null
+            constraint protocol_azur_pkey
+            primary key,
+            protocol_number          varchar(50),
+            measurement_purpose      varchar(250),
+            documents_number         varchar(50),
+            result_visual_inspection varchar(250),
+            climate_data             varchar(50)
+            );
+
+            comment on table protocol_azur
+            is 'Протоколы Азур';
+
+            comment on column protocol_azur.id
+            is 'Идентиффикатор протокола Азур';
+
+            comment on column protocol_azur.protocol_number
+            is 'Номер протокола';
+
+            comment on column protocol_azur.measurement_purpose
+            is 'Цель измерений';
+
+            comment on column protocol_azur.documents_number
+            is 'Номер документов';
+
+            comment on column protocol_azur.result_visual_inspection
+            is 'Результаты визуальноого осмотра';
+
+            comment on column protocol_azur.climate_data
+            is 'Климатические данные';
+
+            alter table protocol_azur
+            owner to postgres;
+
+            create unique index protocol_azur_protocol_number_uindex
+            on protocol_azur (protocol_number);
+        </sql>
+    </changeSet>
+
+    <changeSet id="1.1.1" author="KuhtaIA">
+        <sql>
+            insert into protocol_azur(protocol_number, measurement_purpose, documents_number, result_visual_inspection, climate_data)
+            values ('0113-3', 'приёмо-сдаточные испытания', 'РД 06-572-03', 'удовлетворительные', '+18');
+
+            insert into protocol_azur(protocol_number, measurement_purpose, documents_number, result_visual_inspection, climate_data)
+            values ('0113-4', 'приёмо-сдаточные испытания', 'ГД 06-572-03', 'удовлетворительные', '+20');
+        </sql>
+    </changeSet>
+
+</databaseChangeLog>
