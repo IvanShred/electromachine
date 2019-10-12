@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="ru.shred.electromachine.dao.AzurTestResultDao">
+
+    <resultMap id="AzurTestResultMap" type="ru.shred.electromachine.model.AzurTestResult">
+        <id column="id" property="id"/>
+        <result column="protocol_azur_id" property="protocolAzurId"/>
+        <result column="parameters" property="parameters"/>
+        <result column="test_type" property="testType"/>
+        <result column="norm" property="norm"/>
+        <result column="result" property="result"/>
+        <result column="conclusion" property="conclusion"/>
+        <result column="notation" property="notation"/>
+    </resultMap>
+
+    <select id="getAllByProtocolAzurId" resultMap="AzurTestResultMap">
+        SELECT *
+        FROM azur_test a
+                 INNER JOIN s_azur_test_type t on a.test_type_id = t.id
+        WHERE protocol_azur_id = #{protocolAzurId}
+    </select>
+</mapper>
