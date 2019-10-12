@@ -6,9 +6,11 @@
 
     <changeSet id="1.1.0" author="KuhtaIA">
         <sql>
+            CREATE SEQUENCE protocol_azur_id_seq START WITH 100000;
+
             create table protocol_azur
             (
-            id                       bigint default nextval('global_seq' :: regclass) not null
+            id                       bigint default nextval('protocol_azur_id_seq' :: regclass) not null
             constraint protocol_azur_pkey
             primary key,
             protocol_number          varchar(50),
@@ -54,6 +56,106 @@
 
             insert into protocol_azur(protocol_number, measurement_purpose, documents_number, result_visual_inspection, climate_data)
             values ('0113-4', 'приёмо-сдаточные испытания', 'ГД 06-572-03', 'удовлетворительные', '+20');
+        </sql>
+    </changeSet>
+
+    <changeSet id="1.1.2" author="KuhtaIA">
+        <sql>
+            CREATE SEQUENCE s_azur_test_type_id_seq START WITH 1;
+
+            create table s_azur_test_type
+            (
+            id        bigint default nextval('s_azur_test_type_id_seq' :: regclass) not null
+            constraint s_azur_test_type_pkey
+            primary key,
+            test_type varchar(100)                                     not null
+            );
+
+            comment on table s_azur_test_type
+            is 'Типы испатий АЗУР';
+
+            comment on column s_azur_test_type.test_type
+            is 'Тип испытания АЗУР';
+
+            alter table s_azur_test_type
+            owner to postgres;
+
+            create unique index s_azur_test_type_test_type_uindex
+            on s_azur_test_type (test_type);
+        </sql>
+    </changeSet>
+
+    <changeSet id="1.1.3" author="KuhtaIA">
+        <sql>
+            CREATE SEQUENCE azur_test_id_seq START WITH 100000;
+
+            create table azur_test
+            (
+            id               bigint default nextval('azur_test_id_seq' :: regclass) not null
+            constraint azur_test_pkey
+            primary key,
+            protocol_azur_id bigint
+            constraint azur_test_protocol_azur_id_fk
+            references protocol_azur,
+            test_type_id     bigint                                           not null
+            constraint azur_test_s_azur_test_type_id_fk
+            references s_azur_test_type,
+            parameters       varchar(200),
+            norm             real default 0                                   not null,
+            result           real                                             not null,
+            conclusion       varchar(50),
+            notation         varchar(100)
+            );
+
+            comment on table azur_test
+            is 'Результаты испытаний АЗУР';
+
+            comment on column azur_test.id
+            is 'Идентификатор испытания';
+
+            comment on column azur_test.protocol_azur_id
+            is 'Идентификатор протокола АЗУР';
+
+            comment on column azur_test.test_type_id
+            is 'Тип испытания';
+
+            comment on column azur_test.parameters
+            is 'Параметры испытания';
+
+            comment on column azur_test.norm
+            is 'Норма';
+
+            comment on column azur_test.result
+            is 'Результат';
+
+            comment on column azur_test.conclusion
+            is 'Заключение';
+
+            comment on column azur_test.notation
+            is 'Примечание';
+
+            alter table azur_test
+            owner to postgres;
+
+            create unique index azur_test_azur_id_test_type_uindex
+            on azur_test (protocol_azur_id, test_type_id);
+        </sql>
+    </changeSet>
+
+    <changeSet id="1.1.4" author="KuhtaIA">
+        <sql>
+            insert into s_azur_test_type(test_type) values ('Номинальное напряжение');
+            insert into s_azur_test_type(test_type) values ('Сопротивление');
+            insert into s_azur_test_type(test_type) values ('Время');
+        </sql>
+    </changeSet>
+
+    <changeSet id="1.1.5" author="KuhtaIA">
+        <sql>
+            insert into azur_test(protocol_azur_id, test_type_id, parameters, norm, result, conclusion, notation) VALUES (100000, 1, 'парам 1', 4.3, 4.3, 'заключение', 'примечание');
+            insert into azur_test(protocol_azur_id, test_type_id, parameters, norm, result, conclusion, notation) VALUES (100000, 2, 'парам 2', 5.4, 5.4, 'заключение2', 'примечание2');
+            insert into azur_test(protocol_azur_id, test_type_id, parameters, norm, result, conclusion, notation) VALUES (100000, 3, 'парам 3', 2.9, 2.9, 'заключение3', 'примечание3');
+            insert into azur_test(protocol_azur_id, test_type_id, parameters, norm, result, conclusion, notation) VALUES (100001, 1, 'парам 11',5.9, 5.9, 'заключение11', 'примечание11');
         </sql>
     </changeSet>
 
