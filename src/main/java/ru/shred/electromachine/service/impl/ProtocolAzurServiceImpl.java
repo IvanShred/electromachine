@@ -17,4 +17,9 @@ public class ProtocolAzurServiceImpl implements ProtocolAzurService {
     public List<ProtocolAzur> getAll() {
         return protocolAzurDao.getAll();
     }
+
+    @Override
+    public ProtocolAzur getById(Long id) {
+        return protocolAzurDao.getById(id);
+    }
 }

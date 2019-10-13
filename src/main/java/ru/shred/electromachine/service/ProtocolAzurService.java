@@ -7,4 +7,6 @@ import java.util.List;
 public interface ProtocolAzurService {
 
     List<ProtocolAzur> getAll();
+
+    ProtocolAzur getById(Long id);
 }

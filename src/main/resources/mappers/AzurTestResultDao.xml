@@ -16,7 +16,14 @@
     <select id="getAllByProtocolAzurId" resultMap="AzurTestResultMap">
         SELECT *
         FROM azur_test a
-                 INNER JOIN s_azur_test_type t on a.test_type_id = t.id
+                 INNER JOIN s_azur_test_type t on a.test_type_id = t.test_type_id
         WHERE protocol_azur_id = #{protocolAzurId}
+    </select>
+
+    <select id="getById" resultMap="AzurTestResultMap">
+        SELECT *
+        FROM azur_test a
+                 INNER JOIN s_azur_test_type t on a.test_type_id = t.test_type_id
+        WHERE id = #{id}
     </select>
 </mapper>

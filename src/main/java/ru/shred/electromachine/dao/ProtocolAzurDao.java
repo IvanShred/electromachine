@@ -9,4 +9,6 @@ import java.util.List;
 public interface ProtocolAzurDao {
 
     List<ProtocolAzur> getAll();
+
+    ProtocolAzur getById(Long id);
 }

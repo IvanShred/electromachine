@@ -9,4 +9,6 @@ import java.util.List;
 public interface AzurTestResultDao {
 
     List<AzurTestResult> getAllByProtocolAzurId(Long protocolAzurId);
+
+    AzurTestResult getById(Long id);
 }

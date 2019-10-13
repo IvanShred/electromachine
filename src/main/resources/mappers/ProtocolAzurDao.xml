@@ -5,4 +5,8 @@
     <select id="getAll" resultType="ru.shred.electromachine.model.ProtocolAzur">
         SELECT * FROM protocol_azur
     </select>
+
+    <select id="getById" resultType="ru.shred.electromachine.model.ProtocolAzur">
+        SELECT * FROM protocol_azur where id = #{id}
+    </select>
 </mapper>
