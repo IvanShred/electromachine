@@ -9,4 +9,10 @@ public interface AzurTestResultService {
     List<AzurTestResult> getAllByProtocolId(Long protocolId);
 
     AzurTestResult getById(Long id);
+
+    void update(AzurTestResult azurTestResult);
+
+    void delete(Long id);
+
+    void save(AzurTestResult azurTestResult);
 }

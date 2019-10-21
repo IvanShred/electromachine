@@ -2,6 +2,7 @@ package ru.shred.electromachine.service.impl;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import ru.shred.electromachine.dao.AzurTestResultDao;
 import ru.shred.electromachine.model.AzurTestResult;
 import ru.shred.electromachine.service.AzurTestResultService;
@@ -22,5 +23,23 @@ public class AzurTestResultServiceImpl implements AzurTestResultService {
     @Override
     public AzurTestResult getById(Long id) {
         return dao.getById(id);
+    }
+
+    @Override
+    @Transactional
+    public void update(AzurTestResult azurTestResult) {
+        dao.update(azurTestResult);
+    }
+
+    @Override
+    @Transactional
+    public void delete(Long id) {
+        dao.delete(id);
+    }
+
+    @Override
+    @Transactional
+    public void save(AzurTestResult azurTestResult) {
+        dao.save(azurTestResult);
     }
 }

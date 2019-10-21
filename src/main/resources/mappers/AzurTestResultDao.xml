@@ -26,4 +26,40 @@
                  INNER JOIN s_azur_test_type t on a.test_type_id = t.test_type_id
         WHERE id = #{id}
     </select>
+
+    <update id="update" parameterType="ru.shred.electromachine.model.AzurTestResult">
+        UPDATE azur_test
+        SET protocol_azur_id = #{protocolAzurId},
+            test_type_id     = (SELECT test_type_id FROM s_azur_test_type WHERE test_type = #{testType}),
+            parameters       = #{parameters},
+            norm             = #{norm},
+            result           = #{result},
+            conclusion       = #{conclusion},
+            notation         = #{notation}
+        WHERE id = #{id}
+    </update>
+
+    <delete id="delete">
+        DELETE
+        FROM azur_test
+        WHERE id = #{id}
+    </delete>
+
+    <insert id="save">
+        INSERT INTO azur_test
+        (protocol_azur_id,
+         test_type_id,
+         parameters,
+         norm,
+         result,
+         conclusion,
+         notation)
+        VALUES (#{protocolAzurId},
+                (SELECT test_type_id FROM s_azur_test_type WHERE test_type = #{testType}),
+                #{parameters},
+                #{norm},
+                #{result},
+                #{conclusion},
+                #{notation})
+    </insert>
 </mapper>
