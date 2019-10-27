@@ -39,6 +39,12 @@ public class AzurTestResultServiceImpl implements AzurTestResultService {
 
     @Override
     @Transactional
+    public void deleteAllByProtocolId(Long protocolId) {
+        dao.deleteAllByProtocolAzurId(protocolId);
+    }
+
+    @Override
+    @Transactional
     public void save(AzurTestResult azurTestResult) {
         dao.save(azurTestResult);
     }

@@ -11,4 +11,10 @@ public interface ProtocolAzurDao {
     List<ProtocolAzur> getAll();
 
     ProtocolAzur getById(Long id);
+
+    void delete(Long id);
+
+    void save(ProtocolAzur protocolAzur);
+
+    void update(ProtocolAzur protocolAzur);
 }

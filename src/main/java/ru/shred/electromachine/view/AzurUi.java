@@ -3,8 +3,6 @@ package ru.shred.electromachine.view;
 import com.vaadin.flow.component.UI;
 import com.vaadin.flow.component.grid.Grid;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
-import com.vaadin.flow.component.textfield.TextField;
-import com.vaadin.flow.component.textfield.TextFieldVariant;
 import com.vaadin.flow.data.renderer.NativeButtonRenderer;
 import com.vaadin.flow.router.Route;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -46,6 +44,12 @@ public class AzurUi extends VerticalLayout {
                                     String.format("%s:%s%s/azur/test?protocol-id=%s", ipAddress, port, contextPath, clickedItem.getId()));
                         })
         );
+        protocolAzurGrid.addColumn(
+                new NativeButtonRenderer<>("Удалить",
+                        clickedItem -> {
+                            deleteAzur(clickedItem.getId());
+                        })
+        );
 
         protocolAzurGrid.getColumns().forEach(column -> column.setSortable(true));
         protocolAzurGrid.getColumns().forEach(column -> column.setAutoWidth(true));
@@ -53,5 +57,9 @@ public class AzurUi extends VerticalLayout {
         protocolAzurGrid.setItems(protocolAzurService.getAll());
 
         add(protocolAzurGrid);
+    }
+
+    private void deleteAzur(Long id) {
+        protocolAzurService.delete(id);
     }
 }

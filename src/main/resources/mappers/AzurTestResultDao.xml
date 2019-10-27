@@ -45,6 +45,12 @@
         WHERE id = #{id}
     </delete>
 
+    <delete id="deleteAllByProtocolAzurId">
+        DELETE
+        FROM azur_test
+        WHERE protocol_azur_id = #{protocolAzurId}
+    </delete>
+
     <insert id="save">
         INSERT INTO azur_test
         (protocol_azur_id,

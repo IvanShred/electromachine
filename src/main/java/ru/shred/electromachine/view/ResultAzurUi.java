@@ -125,8 +125,12 @@ public class ResultAzurUi extends VerticalLayout implements HasUrlParameter<Stri
             azurResultDialog.open();
         });
 
+        Button refreshButton = new Button("Обновить", VaadinIcon.REFRESH.create());
+        refreshButton.getStyle().set("border-radius", "12px").set("background-color", "blue").set("color", "white");
+        refreshButton.addClickListener(event -> azurTestResultGrid.setItems(azurTestResultService.getAllByProtocolId(protocolId)));
+
         HorizontalLayout buttonLayout = new HorizontalLayout();
-        buttonLayout.add(addResultButton);
+        buttonLayout.add(addResultButton, refreshButton);
 
         return buttonLayout;
     }

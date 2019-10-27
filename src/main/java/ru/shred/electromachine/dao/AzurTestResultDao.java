@@ -16,5 +16,7 @@ public interface AzurTestResultDao {
 
     void delete(Long id);
 
+    void deleteAllByProtocolAzurId(Long protocolAzurId);
+
     void save(AzurTestResult azurTestResult);
 }

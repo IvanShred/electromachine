@@ -3,10 +3,45 @@
 <mapper namespace="ru.shred.electromachine.dao.ProtocolAzurDao">
 
     <select id="getAll" resultType="ru.shred.electromachine.model.ProtocolAzur">
-        SELECT * FROM protocol_azur
+        SELECT *
+        FROM protocol_azur
     </select>
 
     <select id="getById" resultType="ru.shred.electromachine.model.ProtocolAzur">
-        SELECT * FROM protocol_azur where id = #{id}
+        SELECT *
+        FROM protocol_azur
+        where id = #{id}
     </select>
+
+    <delete id="delete">
+        DELETE
+        FROM protocol_azur
+        WHERE id = #{id}
+    </delete>
+
+    <insert id="save">
+        INSERT INTO protocol_azur
+        (protocol_number,
+         measurement_purpose,
+         documents_number,
+         result_visual_inspection,
+         climate_data)
+        VALUES (
+                   #{protocolNumber},
+                   #{measurementPurpose},
+                   #{documentsNumber},
+                   #{resultVisualInspection},
+                   #{climateData}
+               )
+    </insert>
+
+    <update id="update" parameterType="ru.shred.electromachine.model.AzurTestResult">
+        UPDATE protocol_azur
+        SET protocol_number = #{protocolNumber},
+            measurement_purpose = #{measurementPurpose},
+            documents_number = #{documentsNumber},
+            result_visual_inspection = #{resultVisualInspection},
+            climate_data = #{climateData}
+            WHERE id = #{id}
+    </update>
 </mapper>
