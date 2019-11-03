@@ -101,8 +101,8 @@
             constraint azur_test_s_azur_test_type_id_fk
             references s_azur_test_type,
             parameters       varchar(200),
-            norm             real default 0                                   not null,
-            result           real                                             not null,
+            norm             numeric(14,2)                                    not null,
+            result           numeric(14,2)                                    not null,
             conclusion       varchar(50),
             notation         varchar(100)
             );

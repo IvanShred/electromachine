@@ -3,6 +3,7 @@ package ru.shred.electromachine.view;
 import com.vaadin.flow.component.UI;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.combobox.ComboBox;
+import com.vaadin.flow.component.confirmdialog.ConfirmDialog;
 import com.vaadin.flow.component.dialog.Dialog;
 import com.vaadin.flow.component.grid.Grid;
 import com.vaadin.flow.component.icon.VaadinIcon;
@@ -14,6 +15,7 @@ import com.vaadin.flow.component.textfield.TextArea;
 import com.vaadin.flow.component.textfield.TextField;
 import com.vaadin.flow.component.textfield.TextFieldVariant;
 import com.vaadin.flow.data.renderer.NativeButtonRenderer;
+import com.vaadin.flow.data.renderer.NumberRenderer;
 import com.vaadin.flow.router.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.lang.NonNull;
@@ -22,6 +24,7 @@ import ru.shred.electromachine.model.TestTypeAzur;
 import ru.shred.electromachine.service.AzurTestResultService;
 import ru.shred.electromachine.service.ProtocolAzurService;
 
+import java.text.NumberFormat;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
@@ -54,6 +57,14 @@ public class ResultAzurUi extends VerticalLayout implements HasUrlParameter<Stri
     // Диалоговое окно для редактирования/добавления результатов испытаний Азур
     private Dialog azurResultDialog = new Dialog();
 
+    private ConfirmDialog confirmDeleteAllTestResultsDialog = new ConfirmDialog("Удалить результаты испытаний",
+            "Вы уверены, что хотите удалить все результаты испатаний?", "Да", this::deleteAll,
+            "Отмена", this::closeConfirmDeleteAllDialog);
+
+    private ConfirmDialog confirmDeleteTestResultDialog = new ConfirmDialog("Удалить результат испытаний",
+            "Вы уверены, что хотите удалить результат испатаний?", "Да", event -> deleteAzurTestResult(azurTestResult.getId()),
+            "Отмена", this::closeConfirmDeleteTestResultDialog);
+
     public ResultAzurUi() {
     }
 
@@ -76,8 +87,8 @@ public class ResultAzurUi extends VerticalLayout implements HasUrlParameter<Stri
 
         azurTestResultGrid.addColumn(AzurTestResult::getTestType).setHeader("Тип испытания");
         azurTestResultGrid.addColumn(AzurTestResult::getParameters).setHeader("Параметры испытания");
-        azurTestResultGrid.addColumn(AzurTestResult::getNorm).setHeader("Норма");
-        azurTestResultGrid.addColumn(AzurTestResult::getResult).setHeader("Результаты");
+        azurTestResultGrid.addColumn(new NumberRenderer<>(AzurTestResult::getNorm, NumberFormat.getInstance())).setHeader("Норма");
+        azurTestResultGrid.addColumn(new NumberRenderer<>(AzurTestResult::getResult, NumberFormat.getInstance())).setHeader("Результаты");
         azurTestResultGrid.addColumn(AzurTestResult::getConclusion).setHeader("Заключение");
         azurTestResultGrid.addColumn(AzurTestResult::getNotation).setHeader("Примечание");
         azurTestResultGrid.addColumn(
@@ -92,7 +103,8 @@ public class ResultAzurUi extends VerticalLayout implements HasUrlParameter<Stri
         azurTestResultGrid.addColumn(
                 new NativeButtonRenderer<>("Удалить",
                         clickedItem -> {
-                            deleteAzurTestResult(clickedItem.getId());
+                            azurTestResult = azurTestResultService.getById(clickedItem.getId());
+                            confirmDeleteTestResultDialog.open();
                         })
         );
 
@@ -129,8 +141,12 @@ public class ResultAzurUi extends VerticalLayout implements HasUrlParameter<Stri
         refreshButton.getStyle().set("border-radius", "12px").set("background-color", "blue").set("color", "white");
         refreshButton.addClickListener(event -> azurTestResultGrid.setItems(azurTestResultService.getAllByProtocolId(protocolId)));
 
+        Button deleteAllButton = new Button("Удалить все", VaadinIcon.REFRESH.create());
+        deleteAllButton.getStyle().set("border-radius", "12px").set("background-color", "red").set("color", "white");
+        deleteAllButton.addClickListener(event -> confirmDeleteAllTestResultsDialog.open());
+
         HorizontalLayout buttonLayout = new HorizontalLayout();
-        buttonLayout.add(addResultButton, refreshButton);
+        buttonLayout.add(addResultButton, refreshButton, deleteAllButton);
 
         return buttonLayout;
     }
@@ -150,7 +166,7 @@ public class ResultAzurUi extends VerticalLayout implements HasUrlParameter<Stri
 
         Button saveButton = new Button("Сохранить", VaadinIcon.CHECK.create());
         saveButton.getStyle().set("border-radius", "12px").set("background-color", "blue").set("color", "white");
-        saveButton.addClickListener(event -> saveAzurTestResult(azurTestResult)/*updateAzurTestResult(azurTestResult)*/);
+        saveButton.addClickListener(event -> saveAzurTestResult(azurTestResult));
 
         VerticalLayout azurResultLayout = new VerticalLayout();
         azurResultLayout.add(
@@ -158,6 +174,8 @@ public class ResultAzurUi extends VerticalLayout implements HasUrlParameter<Stri
 
         if (azurTestResult.getId() != null) {
             setValuesAzurResultLayout(azurTestResult);
+        } else {
+            setValuesAzurResultLayoutOnDefault();
         }
 
         return azurResultLayout;
@@ -170,6 +188,14 @@ public class ResultAzurUi extends VerticalLayout implements HasUrlParameter<Stri
         resultNumberField.setValue(azurTestResult.getResult());
         conclusionTextArea.setValue(azurTestResult.getConclusion());
         notationTextArea.setValue(azurTestResult.getNotation());
+    }
+
+    private void setValuesAzurResultLayoutOnDefault() {
+        parametersTextArea.setValue("");
+        normNumberField.setValue(0D);
+        resultNumberField.setValue(0D);
+        conclusionTextArea.setValue("");
+        notationTextArea.setValue("");
     }
 
     private void saveAzurTestResult(AzurTestResult azurTestResult) {
@@ -195,7 +221,7 @@ public class ResultAzurUi extends VerticalLayout implements HasUrlParameter<Stri
         closeDialog();
     }
 
-    private void closeDialog(){
+    private void closeDialog() {
         azurResultDialog.close();
         Notification.show("Изменения сохранены");
         azurTestResultGrid.setItems(azurTestResultService.getAllByProtocolId(protocolId));
@@ -216,5 +242,18 @@ public class ResultAzurUi extends VerticalLayout implements HasUrlParameter<Stri
     private void deleteAzurTestResult(Long id) {
         azurTestResultService.delete(id);
         azurTestResultGrid.setItems(azurTestResultService.getAllByProtocolId(protocolId));
+    }
+
+    private void deleteAll(ConfirmDialog.ConfirmEvent event) {
+        azurTestResultService.deleteAllByProtocolId(protocolId);
+        azurTestResultGrid.setItems(azurTestResultService.getAllByProtocolId(protocolId));
+    }
+
+    private void closeConfirmDeleteAllDialog(ConfirmDialog.CancelEvent cancelEvent) {
+        confirmDeleteAllTestResultsDialog.close();
+    }
+
+    private void closeConfirmDeleteTestResultDialog(ConfirmDialog.CancelEvent cancelEvent) {
+        confirmDeleteTestResultDialog.close();
     }
 }
