@@ -199,12 +199,16 @@ public class ResultAzurUi extends VerticalLayout implements HasUrlParameter<Stri
     }
 
     private void saveAzurTestResult(AzurTestResult azurTestResult) {
-        Long id = azurTestResult.getId();
+        try {
+            Long id = azurTestResult.getId();
 
-        if (id == null) {
-            addAzurTestResult();
-        } else {
-            updateAzurTestResult(id);
+            if (id == null) {
+                addAzurTestResult();
+            } else {
+                updateAzurTestResult(id);
+            }
+        } catch (Exception e) {
+            Notification.show("Ошибка при попытке сохранения/изменения");
         }
     }
 

@@ -2,6 +2,7 @@ package ru.shred.electromachine.view;
 
 import com.vaadin.flow.component.UI;
 import com.vaadin.flow.component.button.Button;
+import com.vaadin.flow.component.confirmdialog.ConfirmDialog;
 import com.vaadin.flow.component.dialog.Dialog;
 import com.vaadin.flow.component.grid.Grid;
 import com.vaadin.flow.component.icon.VaadinIcon;
@@ -44,6 +45,10 @@ public class AzurUi extends VerticalLayout {
     // Диалоговое окно для редактирования/добавления протоколов Азур
     private Dialog azurDialog = new Dialog();
 
+    private ConfirmDialog confirmDeleteProtocolDialog = new ConfirmDialog("Удалить протокол",
+            "Вы уверены, что хотите удалить протокол?", "Да", event -> deleteAzur(protocolAzur.getId()),
+            "Отмена", this::closeConfirmDeleteProtocolDialog);
+
     @Autowired
     public AzurUi(ProtocolAzurService protocolAzurService) {
         this.protocolAzurService = protocolAzurService;
@@ -74,7 +79,8 @@ public class AzurUi extends VerticalLayout {
         protocolAzurGrid.addColumn(
                 new NativeButtonRenderer<>("Удалить",
                         clickedItem -> {
-                            deleteAzur(clickedItem.getId());
+                            protocolAzur = protocolAzurService.getById(clickedItem.getId());
+                            confirmDeleteProtocolDialog.open();
                         })
         );
 
@@ -194,4 +200,7 @@ public class AzurUi extends VerticalLayout {
                 .build();
     }
 
+    private void closeConfirmDeleteProtocolDialog(ConfirmDialog.CancelEvent cancelEvent) {
+        confirmDeleteProtocolDialog.close();
+    }
 }
