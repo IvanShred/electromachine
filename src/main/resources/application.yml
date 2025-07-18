@@ -5,13 +5,13 @@ server:
 
 spring:
   datasource:
-    url: jdbc:postgresql://localhost:5432/electromachine
+    url: jdbc:postgresql://localhost:5450/electromachine
     username: postgres
     password: postgres
 
   liquibase:
     change-log: classpath:db/changelog/db.changelog-master.xml
-    url: jdbc:postgresql://localhost:5432/electromachine
+    url: jdbc:postgresql://localhost:5450/electromachine
     user: postgres
     password: postgres
 

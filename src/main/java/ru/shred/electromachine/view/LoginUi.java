@@ -3,8 +3,10 @@ package ru.shred.electromachine.view;
 import com.vaadin.flow.component.login.LoginOverlay;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.router.Route;
+import com.vaadin.flow.server.auth.AnonymousAllowed;
 
 @Route("login")
+@AnonymousAllowed
 public class LoginUi extends VerticalLayout {
 
     private LoginOverlay login = new LoginOverlay();

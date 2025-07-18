@@ -17,6 +17,7 @@ import com.vaadin.flow.component.textfield.TextFieldVariant;
 import com.vaadin.flow.data.renderer.NativeButtonRenderer;
 import com.vaadin.flow.data.renderer.NumberRenderer;
 import com.vaadin.flow.router.*;
+import com.vaadin.flow.server.auth.AnonymousAllowed;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.lang.NonNull;
 import ru.shred.electromachine.model.AzurTestResult;
@@ -33,6 +34,7 @@ import java.util.stream.Collectors;
 import static ru.shred.electromachine.model.TestTypeAzur.RATED_VOLTAGE;
 
 @Route("azur/test")
+@AnonymousAllowed
 public class ResultAzurUi extends VerticalLayout implements HasUrlParameter<String> {
 
     @Autowired

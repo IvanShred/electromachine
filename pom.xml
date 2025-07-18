@@ -5,7 +5,7 @@
     <parent>
         <groupId>org.springframework.boot</groupId>
         <artifactId>spring-boot-starter-parent</artifactId>
-        <version>2.1.8.RELEASE</version>
+        <version>3.5.3</version>
         <relativePath/> <!-- lookup parent from repository -->
     </parent>
     <groupId>ru.shred</groupId>
@@ -15,8 +15,8 @@
     <description>ИС ведения документации параметров качества продукции</description>
 
     <properties>
-        <java.version>11</java.version>
-        <vaadin.version>14.0.4</vaadin.version>
+        <java.version>17</java.version>
+        <vaadin.version>24.3.10</vaadin.version>
     </properties>
 
     <dependencyManagement>
@@ -55,7 +55,7 @@
         <dependency>
             <groupId>org.mybatis.spring.boot</groupId>
             <artifactId>mybatis-spring-boot-starter</artifactId>
-            <version>2.1.0</version>
+            <version>3.0.3</version>
         </dependency>
 
         <dependency>
@@ -66,6 +66,7 @@
         <dependency>
             <groupId>org.projectlombok</groupId>
             <artifactId>lombok</artifactId>
+            <version>1.18.30</version>
             <optional>true</optional>
         </dependency>
         <dependency>
@@ -91,6 +92,11 @@
             <plugin>
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-maven-plugin</artifactId>
+            </plugin>
+            <plugin>
+                <groupId>com.vaadin</groupId>
+                <artifactId>vaadin-maven-plugin</artifactId>
+                <version>24.3.10</version>
             </plugin>
         </plugins>
     </build>
