@@ -4,7 +4,7 @@
         xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
         xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.5.xsd">
 
-    <changeSet id="1.0.0" author="KuhtaIA">
+    <changeSet id="1.0.0" author="KuhtaIA" context="production,test">
         <sql>
             CREATE SEQUENCE global_seq START WITH 100000;
 
@@ -29,7 +29,7 @@
         </sql>
     </changeSet>
 
-    <changeSet id="1.0.1" author="KuhtaIA">
+    <changeSet id="1.0.1" author="KuhtaIA" context="production,test">
         <sql>
             INSERT INTO users (name, email, password) VALUES
             ('User', 'user@yandex.ru', '{noop}password'),
