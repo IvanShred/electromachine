@@ -17,11 +17,14 @@ public class ProtocolAzurServiceImpl implements ProtocolAzurService {
     private final ProtocolAzurDao protocolAzurDao;
     private final AzurTestResultDao azurTestResultDao;
 
+    @Override
+    @Transactional(readOnly = true)
     public List<ProtocolAzur> getAll() {
         return protocolAzurDao.getAll();
     }
 
     @Override
+    @Transactional(readOnly = true)
     public ProtocolAzur getById(Long id) {
         return protocolAzurDao.getById(id);
     }

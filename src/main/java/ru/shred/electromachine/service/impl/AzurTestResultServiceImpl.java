@@ -16,11 +16,13 @@ public class AzurTestResultServiceImpl implements AzurTestResultService {
     private final AzurTestResultDao dao;
 
     @Override
+    @Transactional(readOnly = true)
     public List<AzurTestResult> getAllByProtocolId(Long protocolId) {
         return dao.getAllByProtocolAzurId(protocolId);
     }
 
     @Override
+    @Transactional(readOnly = true)
     public AzurTestResult getById(Long id) {
         return dao.getById(id);
     }
