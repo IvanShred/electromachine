@@ -13,10 +13,29 @@ services:
     volumes:
       - postgres_data:/var/lib/postgresql/data
     healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U user -d electromachine"]
+      test: ["CMD-SHELL", "pg_isready -U postgres -d electromachine"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+  postgres-test:
+    image: postgres:16.1
+    container_name: postgres-test
+    ports:
+      - "5455:5455"
+    environment:
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgres
+      - POSTGRES_DB=electromachine_test
+      - PGPORT=5455
+    volumes:
+      - postgres_test_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres -d electromachine-test"]
       interval: 5s
       timeout: 5s
       retries: 5
 
 volumes:
   postgres_data:
+  postgres_test_data:

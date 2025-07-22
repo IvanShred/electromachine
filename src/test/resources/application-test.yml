@@ -1,8 +1,14 @@
 spring:
+  datasource:
+    url: jdbc:postgresql://localhost:5455/electromachine_test
+    username: postgres
+    password: postgres
+
   liquibase:
-    change-log: classpath:db/changelog/db.changelog-master.xml
-    enabled: true
-    contexts: test
+    url: ${spring.datasource.url}
+    user: ${spring.datasource.username}
+    password: ${spring.datasource.password}
+    contexts: production, test
 
 logging:
   level:
