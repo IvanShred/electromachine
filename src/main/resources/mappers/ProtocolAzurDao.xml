@@ -19,7 +19,7 @@
         WHERE id = #{id}
     </delete>
 
-    <insert id="save">
+    <select id="save" parameterType="ru.shred.electromachine.model.ProtocolAzur">
         INSERT INTO protocol_azur
         (protocol_number,
          measurement_purpose,
@@ -33,9 +33,10 @@
                    #{resultVisualInspection},
                    #{climateData}
                )
-    </insert>
+        RETURNING *
+    </select>
 
-    <update id="update" parameterType="ru.shred.electromachine.model.AzurTestResult">
+    <select id="update" parameterType="ru.shred.electromachine.model.ProtocolAzur">
         UPDATE protocol_azur
         SET protocol_number = #{protocolNumber},
             measurement_purpose = #{measurementPurpose},
@@ -43,5 +44,6 @@
             result_visual_inspection = #{resultVisualInspection},
             climate_data = #{climateData}
             WHERE id = #{id}
-    </update>
+        RETURNING *
+    </select>
 </mapper>

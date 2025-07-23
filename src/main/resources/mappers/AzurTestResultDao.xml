@@ -27,7 +27,7 @@
         WHERE id = #{id}
     </select>
 
-    <update id="update" parameterType="ru.shred.electromachine.model.AzurTestResult">
+    <select id="update" parameterType="ru.shred.electromachine.model.AzurTestResult">
         UPDATE azur_test
         SET protocol_azur_id = #{protocolAzurId},
             test_type_id     = (SELECT test_type_id FROM s_azur_test_type WHERE test_type = #{testType}),
@@ -37,7 +37,9 @@
             conclusion       = #{conclusion},
             notation         = #{notation}
         WHERE id = #{id}
-    </update>
+        RETURNING azur_test.*,
+            (SELECT test_type FROM s_azur_test_type WHERE test_type_id = azur_test.test_type_id) AS test_type
+    </select>
 
     <delete id="delete">
         DELETE
@@ -51,7 +53,7 @@
         WHERE protocol_azur_id = #{protocolAzurId}
     </delete>
 
-    <insert id="save">
+    <select id="save" resultMap="AzurTestResultMap">
         INSERT INTO azur_test
         (protocol_azur_id,
          test_type_id,
@@ -67,5 +69,7 @@
                 #{result},
                 #{conclusion},
                 #{notation})
-    </insert>
+        RETURNING azur_test.*,
+            (SELECT test_type FROM s_azur_test_type WHERE test_type_id = azur_test.test_type_id) AS test_type
+    </select>
 </mapper>

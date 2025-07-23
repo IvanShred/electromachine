@@ -29,8 +29,8 @@ public class AzurTestResultServiceImpl implements AzurTestResultService {
 
     @Override
     @Transactional
-    public void update(AzurTestResult azurTestResult) {
-        dao.update(azurTestResult);
+    public AzurTestResult update(AzurTestResult azurTestResult) {
+        return dao.update(azurTestResult);
     }
 
     @Override
@@ -47,7 +47,7 @@ public class AzurTestResultServiceImpl implements AzurTestResultService {
 
     @Override
     @Transactional
-    public void save(AzurTestResult azurTestResult) {
-        dao.save(azurTestResult);
+    public AzurTestResult save(AzurTestResult azurTestResult) {
+        return dao.save(azurTestResult);
     }
 }

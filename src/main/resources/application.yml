@@ -25,5 +25,8 @@ electromachine:
   ip:
     address: http://localhost
 
-vaadin:
-  productionMode: true
+#logging:
+#  level:
+#    org:
+#      springframework:
+#        security: DEBUG

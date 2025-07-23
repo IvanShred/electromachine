@@ -39,13 +39,13 @@ public class ProtocolAzurServiceImpl implements ProtocolAzurService {
 
     @Override
     @Transactional
-    public void save(ProtocolAzur protocolAzur) {
-        protocolAzurDao.save(protocolAzur);
+    public ProtocolAzur save(ProtocolAzur protocolAzur) {
+        return protocolAzurDao.save(protocolAzur);
     }
 
     @Override
     @Transactional
-    public void update(ProtocolAzur protocolAzur) {
-        protocolAzurDao.update(protocolAzur);
+    public ProtocolAzur update(ProtocolAzur protocolAzur) {
+        return protocolAzurDao.update(protocolAzur);
     }
 }

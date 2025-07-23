@@ -12,11 +12,11 @@ public interface AzurTestResultDao {
 
     AzurTestResult getById(Long id);
 
-    void update(AzurTestResult azurTestResult);
+    AzurTestResult update(AzurTestResult azurTestResult);
 
     void delete(Long id);
 
     void deleteAllByProtocolAzurId(Long protocolAzurId);
 
-    void save(AzurTestResult azurTestResult);
+    AzurTestResult save(AzurTestResult azurTestResult);
 }

@@ -14,7 +14,7 @@ public interface ProtocolAzurDao {
 
     void delete(Long id);
 
-    void save(ProtocolAzur protocolAzur);
+    ProtocolAzur save(ProtocolAzur protocolAzur);
 
-    void update(ProtocolAzur protocolAzur);
+    ProtocolAzur update(ProtocolAzur protocolAzur);
 }
