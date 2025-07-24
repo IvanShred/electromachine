@@ -3,6 +3,7 @@ package ru.shred.electromachine.controller;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import ru.shred.electromachine.model.AzurTestResult;
 import ru.shred.electromachine.service.AzurTestResultService;
@@ -16,6 +17,7 @@ import java.util.List;
 @RequiredArgsConstructor
 @RequestMapping("/api/azur-test-result")
 @Tag(name = "Результаты испытаний АЗУР", description = "API для работы с результатами испытаний АЗУР")
+@PreAuthorize("hasRole('ADMIN')")
 public class AzurTestResultController {
 
     private final AzurTestResultService azurTestResultService;

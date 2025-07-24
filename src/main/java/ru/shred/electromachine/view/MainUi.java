@@ -6,8 +6,12 @@ import com.vaadin.flow.component.icon.VaadinIcon;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.router.Route;
 import com.vaadin.flow.server.auth.AnonymousAllowed;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.AuthorityUtils;
 import org.springframework.security.core.context.SecurityContextHolder;
+
+import java.util.Collection;
 
 @Route("")
 @AnonymousAllowed
@@ -26,10 +30,10 @@ public class MainUi extends VerticalLayout {
 
         add(buttonAll);
 
-//        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-//        Collection<? extends GrantedAuthority> authorities = authentication.getAuthorities();
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        Collection<? extends GrantedAuthority> authorities = authentication.getAuthorities();
 
-        if (AuthorityUtils.authorityListToSet(SecurityContextHolder.getContext().getAuthentication().getAuthorities()).contains("ROLE_ADMIN")) {
+        if (AuthorityUtils.authorityListToSet(SecurityContextHolder.getContext().getAuthentication().getAuthorities()).contains("ADMIN")) {
             add(buttonAzur, buttonAdmin);
         }
 

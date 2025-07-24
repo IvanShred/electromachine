@@ -3,6 +3,7 @@ package ru.shred.electromachine.controller;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import ru.shred.electromachine.model.ProtocolAzur;
 import ru.shred.electromachine.service.ProtocolAzurService;
@@ -16,6 +17,7 @@ import java.util.List;
 @RequestMapping("/api/protocol-azur")
 @RequiredArgsConstructor
 @Tag(name = "Протокол АЗУР", description = "API для работы с протоколами АЗУР")
+@PreAuthorize("hasRole('ADMIN')")
 public class ProtocolAzurController {
 
     private final ProtocolAzurService protocolAzurService;
