@@ -21,12 +21,12 @@ public class SecurityConfig {
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         return http
                 .authorizeHttpRequests(customizer -> customizer
-                        .requestMatchers("electromachine/api/**").authenticated()
+                        .requestMatchers("electromachine/**").authenticated()
                         .anyRequest().permitAll()
                 )
                 .oauth2ResourceServer(customizer -> customizer.jwt(Customizer.withDefaults()))
                 .sessionManagement(customizer -> customizer
-                        .sessionCreationPolicy(SessionCreationPolicy.IF_REQUIRED)
+                        .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
                 )
                 .csrf(AbstractHttpConfigurer::disable)
                 .build();
