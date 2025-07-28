@@ -13,6 +13,16 @@ services:
     environment:
       - SPRING_DATASOURCE_URL=jdbc:postgresql://postgres:5450/electromachine
       - SPRING_LIQUIBASE_URL=jdbc:postgresql://postgres:5450/electromachine
+
+  electromachine-gateway:
+    image: "electromachine-gateway"
+    container_name: "electromachine-gateway"
+    ports:
+      - "9090:9090"
+    depends_on:
+      keycloak:
+        condition: service_healthy
+    environment:
       - SPRING_DATA_REDIS_HOST=redis
 
   postgres:

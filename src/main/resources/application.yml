@@ -2,9 +2,7 @@ server:
   port: 8090
   servlet:
     context-path: /electromachine
-    session:
-      cookie:
-        name: ELECTROMACHINE_SESSION
+
 spring:
   datasource:
     url: jdbc:postgresql://localhost:5450/electromachine
@@ -20,31 +18,10 @@ spring:
 
   security:
     oauth2:
-      client:
-        registration:
-          keycloak: # произвольное название. Проставляем название сервера авторизации
-            client-id: electromachine-client
-            client-secret: emRSEHRq4FEl24ObYYr7sfboYuu6bvKU
-            scope: openid,roles
-        provider:
-          keycloak:
-            issuer-uri: http://keycloak:8080/realms/electromachine
       resourceserver:
         jwt:
           issuer-uri: http://keycloak:8080/realms/electromachine
           jwk-set-uri: http://keycloak:8080/realms/electromachine/protocol/openid-connect/certs
-
-  session:
-    timeout: 10m
-    redis:
-      namespace: electromachine
-
-  data:
-    redis:
-      connect-timeout: 3s
-      host: localhost
-      port: 6379
-      timeout: 3s
 
 mybatis:
   mapper-locations: classpath*:mappers/**/*.xml
