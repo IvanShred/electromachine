@@ -112,6 +112,7 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
+import org.springframework.security.config.annotation.web.configuration.WebSecurityCustomizer;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -152,7 +153,8 @@ public class SecurityConfig {
                                 "/images/**",
                                 "/favicon.ico",
                                 "/login/oauth2/**",
-                                "/oauth2/authorization/**"
+                                "/oauth2/authorization/**",
+                                "/?v-r=**"
                         ).permitAll()
                         .anyRequest().authenticated()
                 )
@@ -174,7 +176,6 @@ public class SecurityConfig {
 //                .csrf(csrf -> csrf
 //                        .csrfTokenRepository(CookieCsrfTokenRepository.withHttpOnlyFalse())
 //                        .csrfTokenRequestHandler(new XorCsrfTokenRequestAttributeHandler()));
-
         return http.build();
     }
 
@@ -233,5 +234,10 @@ public class SecurityConfig {
 
             return mappedAuthorities;
         };
+    }
+
+    @Bean
+    public WebSecurityCustomizer webSecurityCustomizer() {
+        return web -> web.debug(true);
     }
 }
