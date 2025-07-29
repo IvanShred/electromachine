@@ -4,6 +4,8 @@ server:
     context-path: /electromachine
 
 spring:
+  application:
+    name: electromachine
   datasource:
     url: jdbc:postgresql://localhost:5450/electromachine
     username: postgres

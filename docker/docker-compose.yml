@@ -26,7 +26,6 @@ services:
     environment:
       - SPRING_DATA_REDIS_HOST=redis
       - DISCOVERY_SERVICE_URL=http://electromachine-discovery:8761/eureka/
-      - ELECTROMACHINE_URL=http://electromachine
 
   electromachine-discovery:
     image: "electromachine-discovery"
