@@ -1,39 +1,39 @@
 version: "3.8"
 services:
-  electromachine:
-    image: "electromachine"
-    container_name: "electromachine"
-    depends_on:
-      postgres:
-        condition: service_healthy
-      keycloak:
-        condition: service_healthy
-    ports:
-      - "8090:8090"
-    environment:
-      - SPRING_DATASOURCE_URL=jdbc:postgresql://postgres:5450/electromachine
-      - SPRING_LIQUIBASE_URL=jdbc:postgresql://postgres:5450/electromachine
-      - DISCOVERY_SERVICE_URL=http://electromachine-discovery:8761/eureka/
-
-  electromachine-gateway:
-    image: "electromachine-gateway"
-    container_name: "electromachine-gateway"
-    ports:
-      - "9090:9090"
-    depends_on:
-      keycloak:
-        condition: service_healthy
-    environment:
-      - SPRING_DATA_REDIS_HOST=redis
-      - DISCOVERY_SERVICE_URL=http://electromachine-discovery:8761/eureka/
-
-  electromachine-discovery:
-    image: "electromachine-discovery"
-    container_name: "electromachine-discovery"
-    ports:
-      - "8761:8761"
-    environment:
-      - EUREKA_INSTANCE_HOSTNAME=electromachine-discovery
+#  electromachine:
+#    image: "electromachine"
+#    container_name: "electromachine"
+#    depends_on:
+#      postgres:
+#        condition: service_healthy
+#      keycloak:
+#        condition: service_healthy
+#    ports:
+#      - "8090:8090"
+#    environment:
+#      - SPRING_DATASOURCE_URL=jdbc:postgresql://postgres:5450/electromachine
+#      - SPRING_LIQUIBASE_URL=jdbc:postgresql://postgres:5450/electromachine
+#      - DISCOVERY_SERVICE_URL=http://electromachine-discovery:8761/eureka/
+#
+#  electromachine-gateway:
+#    image: "electromachine-gateway"
+#    container_name: "electromachine-gateway"
+#    ports:
+#      - "9090:9090"
+#    depends_on:
+#      keycloak:
+#        condition: service_healthy
+#    environment:
+#      - SPRING_DATA_REDIS_HOST=redis
+#      - DISCOVERY_SERVICE_URL=http://electromachine-discovery:8761/eureka/
+#
+#  electromachine-discovery:
+#    image: "electromachine-discovery"
+#    container_name: "electromachine-discovery"
+#    ports:
+#      - "8761:8761"
+#    environment:
+#      - EUREKA_INSTANCE_HOSTNAME=electromachine-discovery
 
   postgres:
     image: postgres:16.1

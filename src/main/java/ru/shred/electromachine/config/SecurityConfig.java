@@ -2,44 +2,76 @@ package ru.shred.electromachine.config;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
-import org.springframework.security.config.http.SessionCreationPolicy;
-import org.springframework.security.oauth2.server.resource.authentication.JwtAuthenticationConverter;
-import org.springframework.security.oauth2.server.resource.authentication.JwtGrantedAuthoritiesConverter;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.oauth2.client.oidc.userinfo.OidcUserRequest;
+import org.springframework.security.oauth2.client.oidc.userinfo.OidcUserService;
+import org.springframework.security.oauth2.client.oidc.web.logout.OidcClientInitiatedLogoutSuccessHandler;
+import org.springframework.security.oauth2.client.registration.ClientRegistrationRepository;
+import org.springframework.security.oauth2.core.oidc.user.DefaultOidcUser;
+import org.springframework.security.oauth2.core.oidc.user.OidcUser;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.authentication.logout.LogoutSuccessHandler;
+
+import java.util.Collections;
+import java.util.List;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 @Configuration
 @EnableWebSecurity
 @EnableMethodSecurity
 public class SecurityConfig {
 
+
     @Bean
-    public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
+    public SecurityFilterChain securityFilterChain(HttpSecurity http,
+                                                   ClientRegistrationRepository clientRegistrationRepository) throws Exception {
         return http
                 .authorizeHttpRequests(customizer -> customizer
-                        .requestMatchers("electromachine/**").authenticated()
-                        .anyRequest().permitAll()
+                        .requestMatchers("/VAADIN/**").permitAll()
+                        .anyRequest().authenticated()
                 )
-                .oauth2ResourceServer(customizer -> customizer.jwt(Customizer.withDefaults()))
-                .sessionManagement(customizer -> customizer
-                        .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
+                .oauth2Login(oauth2 -> oauth2
+                        .defaultSuccessUrl("/", true)
+                        .userInfoEndpoint(userInfo -> userInfo
+                                .oidcUserService(customOidcUserService()))
                 )
+                .logout(logout -> logout
+                        .logoutSuccessHandler(oidcLogoutSuccessHandler(clientRegistrationRepository)))
                 .csrf(AbstractHttpConfigurer::disable)
                 .build();
     }
 
     @Bean
-    public JwtAuthenticationConverter jwtAuthenticationConverter() {
-        var grantedAuthoritiesConverter = new JwtGrantedAuthoritiesConverter();
-        grantedAuthoritiesConverter.setAuthorityPrefix("ROLE_");
-        grantedAuthoritiesConverter.setAuthoritiesClaimName("roles");
+    public OidcUserService customOidcUserService() {
+        return new OidcUserService() {
+            @Override
+            public OidcUser loadUser(OidcUserRequest userRequest) {
+                OidcUser oidcUser = super.loadUser(userRequest);
 
-        var authConverter = new JwtAuthenticationConverter();
-        authConverter.setJwtGrantedAuthoritiesConverter(grantedAuthoritiesConverter);
-        return authConverter;
+                List<String> roles = oidcUser.getClaimAsStringList("roles");
+                if (roles == null) {
+                    roles = Collections.emptyList();
+                }
+
+                Set<GrantedAuthority> mappedAuthorities = roles.stream()
+                        .map(role -> new SimpleGrantedAuthority("ROLE_" + role))
+                        .collect(Collectors.toSet());
+
+                return new DefaultOidcUser(mappedAuthorities, oidcUser.getIdToken(), oidcUser.getUserInfo());
+            }
+        };
+    }
+
+    private LogoutSuccessHandler oidcLogoutSuccessHandler(ClientRegistrationRepository clientRegistrationRepository) {
+        var logoutSuccessHandler = new OidcClientInitiatedLogoutSuccessHandler(clientRegistrationRepository);
+        logoutSuccessHandler.setPostLogoutRedirectUri("{baseUrl}");
+
+        return logoutSuccessHandler;
     }
 }
