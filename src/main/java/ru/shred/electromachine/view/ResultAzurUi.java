@@ -1,6 +1,5 @@
 package ru.shred.electromachine.view;
 
-import com.vaadin.flow.component.UI;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.combobox.ComboBox;
 import com.vaadin.flow.component.confirmdialog.ConfirmDialog;
@@ -17,7 +16,6 @@ import com.vaadin.flow.component.textfield.TextFieldVariant;
 import com.vaadin.flow.data.renderer.NativeButtonRenderer;
 import com.vaadin.flow.data.renderer.NumberRenderer;
 import com.vaadin.flow.router.*;
-import com.vaadin.flow.server.auth.AnonymousAllowed;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.lang.NonNull;
 import ru.shred.electromachine.model.AzurTestResult;
@@ -34,7 +32,6 @@ import java.util.stream.Collectors;
 import static ru.shred.electromachine.model.TestTypeAzur.RATED_VOLTAGE;
 
 @Route("azur/test")
-@AnonymousAllowed
 public class ResultAzurUi extends VerticalLayout implements HasUrlParameter<String> {
 
     @Autowired
@@ -120,13 +117,13 @@ public class ResultAzurUi extends VerticalLayout implements HasUrlParameter<Stri
     }
 
     @Override
-    public void setParameter(BeforeEvent event, @OptionalParameter String protocolId) {
+    public void setParameter(BeforeEvent event, @OptionalParameter String parameter) {
         Location location = event.getLocation();
         QueryParameters queryParameters = location.getQueryParameters();
 
         Map<String, List<String>> parametersMap = queryParameters.getParameters();
 
-        UI.getCurrent().add(new ResultAzurUi(azurTestResultService, protocolAzurService, Long.valueOf(parametersMap.get("protocol-id").get(0))));
+        add(new ResultAzurUi(azurTestResultService, protocolAzurService, Long.valueOf(parametersMap.get("protocol-id").get(0))));
     }
 
     @NonNull

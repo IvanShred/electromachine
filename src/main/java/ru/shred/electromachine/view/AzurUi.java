@@ -12,7 +12,6 @@ import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.component.textfield.TextField;
 import com.vaadin.flow.data.renderer.NativeButtonRenderer;
 import com.vaadin.flow.router.Route;
-import com.vaadin.flow.server.auth.AnonymousAllowed;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.lang.NonNull;
@@ -20,7 +19,6 @@ import ru.shred.electromachine.model.ProtocolAzur;
 import ru.shred.electromachine.service.ProtocolAzurService;
 
 @Route("azur")
-@AnonymousAllowed
 public class AzurUi extends VerticalLayout {
 
     private final ProtocolAzurService protocolAzurService;
