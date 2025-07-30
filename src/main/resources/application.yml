@@ -27,8 +27,6 @@ spring:
             client-secret: emRSEHRq4FEl24ObYYr7sfboYuu6bvKU
             scope: openid,roles
             authorization-grant-type: authorization_code
-#            redirect-uri: {baseUrl}/login/oauth2/code/{registrationId}
-#            client-name: Keycloak
         provider:
           keycloak:
             issuer-uri: http://keycloak:8080/realms/electromachine
@@ -42,16 +40,6 @@ mybatis:
   mapper-locations: classpath*:mappers/**/*.xml
   configuration:
     map-underscore-to-camel-case: true
-
-#eureka:
-#  client:
-#    service-url:
-#      defaultZone: ${DISCOVERY_SERVICE_URL:http://localhost:8761/eureka/}
-#    initial-instance-info-replication-interval-seconds: 5
-#  instance:
-#    lease-renewal-interval-in-seconds: 5
-#    lease-expiration-duration-in-seconds: 5
-#    prefer-ip-address: true
 
 electromachine:
   ip:
