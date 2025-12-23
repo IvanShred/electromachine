@@ -24,21 +24,17 @@ spring:
         registration:
           keycloak:
             client-id: electromachine-client
-            client-secret: emRSEHRq4FEl24ObYYr7sfboYuu6bvKU
+            client-secret: CyQfcFMsz7TFohoAKOu2wULxypspcT4S
             scope: openid,roles
             authorization-grant-type: authorization_code
+            provider: keycloak
         provider:
           keycloak:
             issuer-uri: http://keycloak:8080/realms/electromachine
-            authorization-uri: http://keycloak:8080/realms/electromachine/protocol/openid-connect/auth
-            token-uri: http://keycloak:8080/realms/electromachine/protocol/openid-connect/token
-            user-info-uri: http://keycloak:8080/realms/electromachine/protocol/openid-connect/userinfo
-            jwk-set-uri: http://keycloak:8080/realms/electromachine/protocol/openid-connect/certs
             user-name-attribute: preferred_username
       resourceserver:
         jwt:
           issuer-uri: http://keycloak:8080/realms/electromachine
-          jwk-set-uri: http://keycloak:8080/realms/electromachine/protocol/openid-connect/certs
 
 mybatis:
   mapper-locations: classpath*:mappers/**/*.xml
@@ -51,8 +47,8 @@ electromachine:
 
 logging:
   level:
-    org:
-      springframework:
-        security: DEBUG
+    org.springframework.security.oauth2: TRACE
+    org.springframework.security.web: DEBUG
+    org.springframework.web.client: DEBUG
     com:
       vaadin: DEBUG

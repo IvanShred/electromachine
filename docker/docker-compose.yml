@@ -32,6 +32,23 @@ services:
       timeout: 5s
       retries: 5
 
+  postgres-keycloak:
+    image: postgres:16.1
+    container_name: postgres-keycloak
+    ports:
+      - "5490:5432"
+    environment:
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgres
+      - POSTGRES_DB=keycloak
+    volumes:
+      - postgres_keycloak_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres -d keycloak"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
   postgres-test:
     image: postgres:16.1
     container_name: postgres-test
@@ -50,25 +67,83 @@ services:
       timeout: 5s
       retries: 5
 
+  # MailHog для тестирования email
+  mailhog:
+    image: mailhog/mailhog
+    container_name: mailhog
+    ports:
+      - "1025:1025"  # SMTP порт
+      - "8025:8025"  # Web UI для просмотра писем
+    healthcheck:
+      test: ["CMD", "wget", "--no-verbose", "--tries=1", "--spider", "http://localhost:8025"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 10s
+
   keycloak:
-    image: quay.io/keycloak/keycloak:24.0
+    build:
+      context: .
+      dockerfile: Dockerfile.keycloak-magiclink
     container_name: "keycloak"
-    command: start-dev --import-realm # start keycloak in development mode
+    command: start-dev --features=preview
+    depends_on:
+      postgres-keycloak:
+        condition: service_healthy
+      mailhog:
+        condition: service_healthy
     volumes:
-      - ./keycloak:/opt/keycloak/data/import
+      - ./keycloak_data:/opt/keycloak/data
+      - ./keycloak-providers:/opt/keycloak/providers
+      - ./keycloak-themes:/opt/keycloak/themes
     environment:
       - KEYCLOAK_ADMIN=user
       - KEYCLOAK_ADMIN_PASSWORD=password
       - KC_HOSTNAME=keycloak
       - KC_HEALTH_ENABLED=true
+      - KC_HTTP_ENABLED=true
+
+      # Настройки базы данных
+      - KC_DB=postgres
+      - KC_DB_URL=jdbc:postgresql://postgres-keycloak/keycloak
+      - KC_DB_USERNAME=postgres
+      - KC_DB_PASSWORD=postgres
+      - KC_DB_SCHEMA=public
+      - KC_TRANSACTION_XA_ENABLED=false
+
+      # Настройки SMTP для MailHog
+      - KC_HOSTNAME_SENDER_EMAIL=no-reply@electromachine.local
+      - KC_HOSTNAME_SMTP__HOST=mailhog
+      - KC_HOSTNAME_SMTP__PORT=1025
+      - KC_HOSTNAME_SMTP__FROM=no-reply@electromachine.local
+      - KC_HOSTNAME_SMTP__FROM_DISPLAY_NAME=ElectroMachine Auth
+      - KC_HOSTNAME_SMTP__AUTH=false
+      - KC_HOSTNAME_SMTP__SSL=false
+      - KC_HOSTNAME_SMTP__STARTTLS=false
+
+      # Включение preview features (обязательно для magic link)
+      - KC_FEATURES=preview
+
+      # Дополнительные настройки
+      - KC_LOG_LEVEL=INFO
+      - KC_METRICS_ENABLED=true
+      - KC_PROXY=edge
+      - KC_PROXY_HEADERS=xforwarded
+
+      # Таймауты для SMTP
+      - JAVA_OPTS_APPEND=-Dmail.smtp.connectiontimeout=10000 -Dmail.smtp.timeout=10000 -Dmail.smtp.writetimeout=10000 -Dmail.debug=true
+
     ports:
       - "8080:8080"
+      - "8443:8443"
     healthcheck:
-      test: ["CMD-SHELL", "exec 3<>/dev/tcp/127.0.0.1/8080;echo -e \"GET /health/ready HTTP/1.1\r\nhost: http://localhost\r\nConnection: close\r\n\r\n\" >&3;grep \"HTTP/1.1 200 OK\" <&3"]
-      interval: 5s
+      test: ["CMD", "curl", "-f", "http://localhost:8080/health/ready"]
+      interval: 10s
       timeout: 5s
-      retries: 100
+      retries: 30
+      start_period: 60s
 
 volumes:
   postgres_data:
   postgres_test_data:
+  postgres_keycloak_data:
