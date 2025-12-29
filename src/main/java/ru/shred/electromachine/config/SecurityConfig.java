@@ -1,5 +1,6 @@
 package ru.shred.electromachine.config;
 
+import com.vaadin.flow.shared.ApplicationConstants;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.Customizer;
@@ -20,6 +21,7 @@ import org.springframework.security.oauth2.server.resource.authentication.JwtGra
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.SavedRequestAwareAuthenticationSuccessHandler;
 import org.springframework.security.web.authentication.logout.LogoutSuccessHandler;
+import org.springframework.security.web.authentication.LoginUrlAuthenticationEntryPoint;
 
 import java.util.Collections;
 import java.util.List;
@@ -44,8 +46,27 @@ public class SecurityConfig {
                                                    ClientRegistrationRepository clientRegistrationRepository) throws Exception {
         return http
                 .authorizeHttpRequests(customizer -> customizer
-                        .requestMatchers("/VAADIN/**").permitAll()
+                        // Разрешаем внутренние запросы Vaadin фреймворка (init, heartbeat, uidl и т.д.)
+                        .requestMatchers(request -> request.getParameter(ApplicationConstants.REQUEST_TYPE_PARAMETER) != null).permitAll()
+                        // Статика/ресурсы, необходимые Vaadin
+                        .requestMatchers(
+                                "/VAADIN/**",
+                                "/offline-stub.html",
+                                "/frontend/**",
+                                "/webjars/**",
+                                "/icons/**",
+                                "/images/**",
+                                "/manifest.webmanifest",
+                                "/sw.js",
+                                "/favicon.ico"
+                        ).permitAll()
+                        // Страница OTP и API прокси
+                        .requestMatchers("/otp", "/api/otp/**").permitAll()
                         .anyRequest().authenticated()
+                )
+                // Для неаутентифицированных пользователей показываем нашу страницу OTP, а не стандартный логин KC
+                .exceptionHandling(ex -> ex
+                        .authenticationEntryPoint(new LoginUrlAuthenticationEntryPoint("/otp"))
                 )
                 .oauth2Login(oauth2 -> oauth2
                         .defaultSuccessUrl("/", false)

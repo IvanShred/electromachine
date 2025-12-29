@@ -52,3 +52,14 @@ logging:
     org.springframework.web.client: DEBUG
     com:
       vaadin: DEBUG
+
+# Keycloak OTP proxy settings
+otp:
+  keycloak:
+    base-url: http://localhost:8080
+    realm: electromachine
+    client-id: electromachine-client
+    # This must be registered in Keycloak client's redirect URIs
+    redirect-uri: http://localhost:8090/electromachine/login/oauth2/code/keycloak
+    response-type: code
+    scope: openid
