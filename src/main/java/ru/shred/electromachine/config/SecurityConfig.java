@@ -31,6 +31,14 @@ import java.util.stream.Collectors;
 @EnableMethodSecurity
 public class SecurityConfig {
 
+    /**
+     * Определяет фильтр безопасности цепочки для настройки политик безопасности приложения.
+     *
+     * @param http объект {@code HttpSecurity}, используемый для настройки конфигурации безопасности.
+     * @param clientRegistrationRepository репозиторий регистрации клиентов, использующийся для работы с OAuth2 клиентами.
+     * @return объект {@code SecurityFilterChain}, определяющий цепочку фильтров безопасности.
+     * @throws Exception если возникает ошибка при настройке.
+     */
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http,
                                                    ClientRegistrationRepository clientRegistrationRepository) throws Exception {
@@ -52,6 +60,12 @@ public class SecurityConfig {
                 .build();
     }
 
+    /**
+     * Создает настраиваемую реализацию {@code OidcUserService} для обработки информации об OIDC пользователях,
+     * включая преобразование списков ролей из claims в соответствующие {@code GrantedAuthority}.
+     *
+     * @return объект {@code OidcUserService}, который обрабатывает информацию об OIDC пользователях и задает роли пользователя.
+     */
     @Bean
     public OidcUserService customOidcUserService() {
         return new OidcUserService() {
@@ -73,6 +87,13 @@ public class SecurityConfig {
         };
     }
 
+    /**
+     * Создает и возвращает настроенный объект {@code JwtAuthenticationConverter},
+     * предназначенный для преобразования токена JWT в объект {@code AbstractAuthenticationToken}.
+     * Настройка включает задание имени claims для ролей и префикса для авторитарных строк.
+     *
+     * @return объект {@code JwtAuthenticationConverter}, используемый для аутентификации на основе JWT.
+     */
     @Bean
     public JwtAuthenticationConverter jwtAuthenticationConverter() {
         var grantedAuthoritiesConverter = new JwtGrantedAuthoritiesConverter();
@@ -84,6 +105,14 @@ public class SecurityConfig {
         return authConverter;
     }
 
+    /**
+     * Создает обработчик успешного завершения процедуры выхода пользователя из системы,
+     * обеспечивающий корректный выход и выполняющий перенаправление на указанный URL после выхода.
+     *
+     * @param clientRegistrationRepository объект {@code ClientRegistrationRepository},
+     *                                     используемый для управления регистрациями клиентов OAuth2.
+     * @return объект {@code LogoutSuccessHandler}, отвечающий за обработку успешного завершения выхода.
+     */
     private LogoutSuccessHandler oidcLogoutSuccessHandler(ClientRegistrationRepository clientRegistrationRepository) {
         var logoutSuccessHandler = new OidcClientInitiatedLogoutSuccessHandler(clientRegistrationRepository);
         logoutSuccessHandler.setPostLogoutRedirectUri("{baseUrl}");

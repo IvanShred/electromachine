@@ -7,6 +7,9 @@ WORKDIR /opt/keycloak
 # Копируем провайдер magic link
 COPY keycloak-providers/keycloak-magic-link.jar /opt/keycloak/providers/
 
+# Копируем кастомные темы
+# COPY keycloak-themes/ /opt/keycloak/themes/
+
 # Собираем Keycloak с провайдером
 RUN /opt/keycloak/bin/kc.sh build --features=preview
 

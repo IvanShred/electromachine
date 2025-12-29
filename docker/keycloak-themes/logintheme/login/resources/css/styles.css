@@ -1,0 +1,22 @@
+.kc-auth-container {
+    max-width: 420px;
+    margin: 0 auto;
+}
+
+.kc-auth-title {
+    text-align: center;
+    margin-bottom: 24px;
+}
+
+.kc-auth-method {
+    margin-bottom: 20px;
+}
+
+.kc-divider {
+    margin: 20px 0;
+}
+
+.kc-button-primary,
+.kc-button-secondary {
+    width: 100%;
+}

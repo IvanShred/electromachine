@@ -147,3 +147,6 @@ volumes:
   postgres_data:
   postgres_test_data:
   postgres_keycloak_data:
+  keycloak_data:
+  keycloak_providers:
+  keycloak_themes:
